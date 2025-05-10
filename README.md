@@ -22,3 +22,8 @@ Once complete, press the upload button. You may wait upwards of 5-7 minutes depe
 You will notice that the conversion is complete when a chart displays on the front-end. This chart shows how many blocks are needed to complete the build.
 
 The output image that you will use for the build is saved in the output folder of this repository. 
+
+# TROUBLESHOOTING
+
+Make sure that before you use the program, you install the most recent version of Python.
+You must also install the necessary packages.
