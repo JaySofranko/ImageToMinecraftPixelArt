@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minecraft Pixel Art Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .upload-btn {
+      margin-top: 20px;
+    }
+    #outputImage {
+      margin-top: 20px;
+    }
+    .slider-container {
+      margin-top: 20px;
+    }
+    .slider-container label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    p {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Upload Your Image</h1>
+
+    <form id="uploadForm">
+      <input type="file" id="image" name="image" accept="image/*" required>
+      <button type="submit" class="upload-btn">Upload</button>
+    </form>
+
+    <div class="slider-container">
+      <label for="qualitySlider">Quality (1 = Highest, 10 = Lowest)</label>
+      <input type="range" id="qualitySlider" name="qualitySlider" min="1" max="10" value="5">
+      <p id="qualityValue">Quality: 5</p>
+    </div>
+
+    <div class="slider-container">
+      <label for="sizeSlider">Image Size (1 = Smallest, 10 = Largest)</label>
+      <input type="range" id="sizeSlider" name="sizeSlider" min="1" max="10" value="5">
+      <p id="sizeValue">Size: 5</p>
+    </div>
+
+    <h2>Generated Pixel Art:</h2>
+    <img id="outputImage" src="" alt="Generated Image" style="max-width: 100%; display:none;">
+
+    <h2>Block Counts:</h2>
+    <table id="blockCountsTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Block Name</th>
+          <th>Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Block counts will be added here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.getElementById('qualitySlider').addEventListener('input', function(event) {
+      document.getElementById('qualityValue').textContent = `Quality: ${event.target.value}`;
+    });
+
+    document.getElementById('sizeSlider').addEventListener('input', function(event) {
+      document.getElementById('sizeValue').textContent = `Size: ${event.target.value}`;
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Get the quality and size values
+      const quality = document.getElementById('qualitySlider').value;
+      const size = document.getElementById('sizeSlider').value;
+
+      // Create a new FormData object
+      const formData = new FormData();
+      const fileInput = document.getElementById('image');
+      formData.append('image', fileInput.files[0]);
+      formData.append('quality', quality);
+      formData.append('size', size);
+
+      // Send the data to the server using fetch
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Display the generated image
+          const imageUrl = data.image_url;
+          const outputImage = document.getElementById('outputImage');
+          outputImage.src = imageUrl;
+          outputImage.style.display = 'block';
+
+          // Display the block counts in the table
+          const blockCountsTable = document.getElementById('blockCountsTable');
+          const tbody = blockCountsTable.querySelector('tbody');
+          tbody.innerHTML = ''; // Clear previous data
+
+          // Populate the table with block counts, but only include those with count > 0
+          data.block_counts.forEach(([blockName, count]) => {
+            if (count > 0) {  // Only add rows with count > 0
+              const row = document.createElement('tr');
+              const blockNameCell = document.createElement('td');
+              blockNameCell.textContent = blockName;
+              const countCell = document.createElement('td');
+              countCell.textContent = count;
+              row.appendChild(blockNameCell);
+              row.appendChild(countCell);
+              tbody.appendChild(row);
+            }
+          });
+
+          // Show the table
+          blockCountsTable.style.display = 'table';
+        } else {
+          alert('Failed to process the image');
+        }
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+        alert('An error occurred while uploading the image');
+      });
+    });
+  </script>
+<p>NOT AN OFFICIAL MINECRAFT PRODUCT/SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</p>
+</body>
+</html>
