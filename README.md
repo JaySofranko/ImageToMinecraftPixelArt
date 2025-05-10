@@ -31,7 +31,7 @@ You must also install the necessary packages.
 
 You can do this by navigating to the repository directory in the terminal/command prompt:
 
-cd path/to/your/project (Whatever you saved it as) Default: 
+cd path/to/your/project (Whatever you saved it as) example: cd /home/user/Downloads/ImageToMinecraftPixelArt
 
 Then, install the dependencies using requirements.txt:
 
