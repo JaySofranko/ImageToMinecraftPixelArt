@@ -26,4 +26,14 @@ The output image that you will use for the build is saved in the output folder o
 # TROUBLESHOOTING
 
 Make sure that before you use the program, you install the most recent version of Python.
+
 You must also install the necessary packages.
+
+You can do this by navigating to the repository directory in the terminal/command prompt:
+
+cd path/to/your/project (Whatever you saved it as) Default: 
+
+Then, install the dependencies using requirements.txt:
+
+pip install -r requirements.txt
+
